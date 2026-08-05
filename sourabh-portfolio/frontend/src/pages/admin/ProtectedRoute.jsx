@@ -1,0 +1,21 @@
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext.jsx";
+
+export default function ProtectedRoute({ children }) {
+  const { isAuthenticated, checking } = useAuth();
+  const location = useLocation();
+
+  if (checking) {
+    return (
+      <div className="min-h-screen bg-noir-ink flex items-center justify-center">
+        <p className="font-mono text-sm text-paper/50">Checking session…</p>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/admin/login" state={{ from: location.pathname }} replace />;
+  }
+
+  return children;
+}
