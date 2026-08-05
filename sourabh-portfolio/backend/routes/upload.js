@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
 const allowed = new Set([".png", ".jpg", ".jpeg", ".svg", ".webp", ".gif"]);
 const upload = multer({
   storage,
-  limits: { fileSize: 3 * 1024 * 1024 }, // 3MB
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
   fileFilter: (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
     if (!allowed.has(ext)) return cb(new Error("Unsupported image type."));
