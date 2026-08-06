@@ -12,14 +12,18 @@ import Contact from "../components/Contact.jsx";
 import Footer from "../components/Footer.jsx";
 import { api } from "../lib/api.js";
 import { fallbackProjects } from "../data/projects.js";
+import { useProfile } from "../context/ProfileContext.jsx";
 
 export default function PublicSite() {
+
+  const { loading: profileLoading } = useProfile();
+
   const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(false);
+ const [projectsLoading, setProjectsLoading] = useState(false);
 
   useEffect(() => {
     let ignore = false;
-    setLoading(true);
+    setProjectsLoading(true);
     api("/api/projects")
       .then((data) => {
         if (!ignore && Array.isArray(data) && data.length > 0) setProjects(data);
@@ -28,7 +32,7 @@ export default function PublicSite() {
        setProjects(fallbackProjects);
       })
       .finally(() => {
-        if (!ignore) setLoading(false);
+        if (!ignore) setProjectsLoading(false);
       });
     return () => {
       ignore = true;
@@ -37,7 +41,7 @@ export default function PublicSite() {
 
   return (
     <div className="min-h-screen">
-      <Preloader />
+      <Preloader loading={profileLoading || projectsLoading} />
       <Navbar />
       <main>
         <Hero />

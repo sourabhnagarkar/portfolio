@@ -8,22 +8,31 @@ const bootLines = [
   "READY.",
 ];
 
-export default function Preloader({ minDuration = 1800 }) {
+export default function Preloader({
+  loading,
+  minDuration = 1800,
+}) {
   const [visible, setVisible] = useState(true);
   const [lineIndex, setLineIndex] = useState(0);
 
-  useEffect(() => {
-    const lineTimer = setInterval(() => {
-      setLineIndex((i) => Math.min(i + 1, bootLines.length - 1));
-    }, minDuration / bootLines.length);
+useEffect(() => {
+  const lineTimer = setInterval(() => {
+    setLineIndex((i) => Math.min(i + 1, bootLines.length - 1));
+  }, minDuration / bootLines.length);
 
-    const hideTimer = setTimeout(() => setVisible(false), minDuration + 250);
+  let hideTimer;
 
-    return () => {
-      clearInterval(lineTimer);
-      clearTimeout(hideTimer);
-    };
-  }, [minDuration]);
+  if (!loading) {
+    hideTimer = setTimeout(() => {
+      setVisible(false);
+    }, 300);
+  }
+
+  return () => {
+    clearInterval(lineTimer);
+    if (hideTimer) clearTimeout(hideTimer);
+  };
+}, [loading, minDuration]);
 
   return (
     <AnimatePresence>
