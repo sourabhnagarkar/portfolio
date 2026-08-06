@@ -24,7 +24,7 @@ app.use(cors({ origin: CLIENT_ORIGIN }));
 app.use(express.json());
 
 // Serve uploaded logos / project covers / certificate badges / gallery photos
-app.use("/uploads", express.static(path.resolve("uploads")));
+//app.use("/uploads", express.static(path.resolve("uploads")));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
