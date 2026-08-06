@@ -14,7 +14,7 @@ import { api } from "../lib/api.js";
 import { fallbackProjects } from "../data/projects.js";
 
 export default function PublicSite() {
-  const [projects, setProjects] = useState(fallbackProjects);
+  const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -25,8 +25,7 @@ export default function PublicSite() {
         if (!ignore && Array.isArray(data) && data.length > 0) setProjects(data);
       })
       .catch(() => {
-        // Silently keep the fallback data — the page still works
-        // even if the backend/MongoDB isn't running yet.
+       setProjects(fallbackProjects);
       })
       .finally(() => {
         if (!ignore) setLoading(false);

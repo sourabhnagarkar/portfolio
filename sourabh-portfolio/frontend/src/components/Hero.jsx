@@ -40,7 +40,10 @@ function TypedRole({ roles }) {
 }
 
 export default function Hero() {
-  const { profile } = useProfile();
+  const { profile, loading } = useProfile();
+if (loading || !profile) {
+  return null;
+}
   const [firstName, ...rest] = profile.name.split(" ");
   const lastName = rest.join(" ");
 

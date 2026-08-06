@@ -5,15 +5,15 @@ import { fallbackProfile } from "../data/profile.js";
 const ProfileContext = createContext(null);
 
 export function ProfileProvider({ children }) {
-  const [profile, setProfile] = useState(fallbackProfile);
-  const [loading, setLoading] = useState(true);
+const [profile, setProfile] = useState(null);
+const [loading, setLoading] = useState(true);
 
   async function refresh() {
     try {
       const data = await api("/api/profile");
       setProfile(data);
     } catch {
-      // keep fallback data — the site still works if the API is down
+      setProfile(fallbackProfile);
     } finally {
       setLoading(false);
     }
