@@ -48,7 +48,7 @@ export default function PublicSite() {
         <Gallery />
         <About />
         <Skills />
-        <Projects projects={projects} loading={loading} />
+        <Projects projects={projects} loading={projectsLoading} />
         <Certificates />
         <Education />
         <Contact />
