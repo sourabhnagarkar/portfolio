@@ -12,28 +12,33 @@ import Contact from "../components/Contact.jsx";
 import Footer from "../components/Footer.jsx";
 import { api } from "../lib/api.js";
 import { fallbackProjects } from "../data/projects.js";
-import { useProfile } from "../context/ProfileContext.jsx";
 
 export default function PublicSite() {
-
-  const { loading: profileLoading } = useProfile();
-
-  const [projects, setProjects] = useState([]);
- const [projectsLoading, setProjectsLoading] = useState(false);
+  // Show projects immediately while the backend loads
+  const [projects, setProjects] = useState(fallbackProjects);
+  const [projectsLoading, setProjectsLoading] = useState(false);
 
   useEffect(() => {
     let ignore = false;
+
     setProjectsLoading(true);
+
     api("/api/projects")
       .then((data) => {
-        if (!ignore && Array.isArray(data) && data.length > 0) setProjects(data);
+        if (!ignore && Array.isArray(data) && data.length > 0) {
+          setProjects(data);
+        }
       })
-      .catch(() => {
-       setProjects(fallbackProjects);
+      .catch((err) => {
+        console.error("Projects fetch failed:", err);
+        // Keep fallback projects
       })
       .finally(() => {
-        if (!ignore) setProjectsLoading(false);
+        if (!ignore) {
+          setProjectsLoading(false);
+        }
       });
+
     return () => {
       ignore = true;
     };
@@ -41,18 +46,27 @@ export default function PublicSite() {
 
   return (
     <div className="min-h-screen">
-      <Preloader loading={profileLoading || projectsLoading} />
+      {/* Don't wait for Render/MongoDB to show the website */}
+      <Preloader loading={false} />
+
       <Navbar />
+
       <main>
         <Hero />
         <Gallery />
         <About />
         <Skills />
-        <Projects projects={projects} loading={projectsLoading} />
+
+        <Projects
+          projects={projects}
+          loading={projectsLoading}
+        />
+
         <Certificates />
         <Education />
         <Contact />
       </main>
+
       <Footer />
     </div>
   );
