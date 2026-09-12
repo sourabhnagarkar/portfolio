@@ -9,24 +9,54 @@ export default function Certificates() {
 
   useEffect(() => {
     let ignore = false;
+
     api("/api/certificates")
       .then((data) => {
-        if (!ignore) setCertificates(data);
+        if (!ignore && Array.isArray(data)) {
+          setCertificates(data);
+        }
       })
-      .catch(() => {})
+      .catch((err) => {
+        console.error("Certificates fetch failed:", err);
+      })
       .finally(() => {
-        if (!ignore) setLoading(false);
+        if (!ignore) {
+          setLoading(false);
+        }
       });
+
     return () => {
       ignore = true;
     };
   }, []);
 
-  if (!loading && certificates.length === 0) return null;
+  if (!loading && certificates.length === 0) {
+    return null;
+  }
 
   return (
-    <section id="certificates" className="relative py-28 border-b border-crimson/10 blueprint-grid bg-noir-panel/20">
-      <div className="max-w-6xl mx-auto px-6">
+    <section
+      id="certificates"
+      className="
+        relative
+        py-16
+        sm:py-20
+        md:py-28
+        border-b
+        border-crimson/10
+        blueprint-grid
+        bg-noir-panel/20
+        overflow-hidden
+      "
+    >
+      <div
+        className="
+          max-w-6xl
+          mx-auto
+          px-4
+          sm:px-6
+        "
+      >
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -35,22 +65,39 @@ export default function Certificates() {
         >
           Sheet 04.5 — Certifications
         </motion.p>
+
         <motion.h2
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.05 }}
-          className="font-display text-4xl sm:text-5xl text-paper mb-14"
+          className="
+            font-display
+            text-3xl
+            sm:text-4xl
+            md:text-5xl
+            text-paper
+            mb-10
+            sm:mb-12
+            md:mb-14
+            leading-tight
+          "
         >
           Certificates &amp; achievements
         </motion.h2>
 
         {loading ? (
-          <p className="font-mono text-sm text-paper/50">Loading…</p>
+          <p className="font-mono text-sm text-paper/50">
+            Loading…
+          </p>
         ) : (
-          <div className="grid sm:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 gap-4 sm:gap-5">
             {certificates.map((cert, i) => (
-              <CertificateCard key={cert._id} certificate={cert} index={i} />
+              <CertificateCard
+                key={cert._id}
+                certificate={cert}
+                index={i}
+              />
             ))}
           </div>
         )}

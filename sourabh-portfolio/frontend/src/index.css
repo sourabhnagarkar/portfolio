@@ -4,7 +4,8 @@
 
 html {
   scroll-behavior: smooth;
-  font-size: 17px; /* slightly larger base for readability across the site */
+  font-size: 17px;
+  overflow-x: hidden;
 }
 
 @media (min-width: 1024px) {
@@ -15,6 +16,21 @@ html {
 
 body {
   @apply bg-noir-ink text-paper font-body antialiased;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 ::selection {
@@ -22,16 +38,21 @@ body {
   color: #0A0A0B;
 }
 
-/* Fine dotted blueprint grid, layered as a fixed backdrop */
+/* Fine dotted blueprint grid */
 .blueprint-grid {
-  background-image: radial-gradient(circle, rgba(255, 51, 71, 0.16) 1px, transparent 1px);
+  background-image: radial-gradient(
+    circle,
+    rgba(255, 51, 71, 0.16) 1px,
+    transparent 1px
+  );
   background-size: 28px 28px;
 }
 
-/* Corner brackets used on sheet/panel cards, like a technical drawing frame */
+/* Corner brackets */
 .corner-brackets {
   position: relative;
 }
+
 .corner-brackets::before,
 .corner-brackets::after {
   content: "";
@@ -40,20 +61,27 @@ body {
   height: 14px;
   border-color: #FF3347;
   opacity: 0.6;
-  transition: opacity 0.3s ease, width 0.3s ease, height 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    width 0.3s ease,
+    height 0.3s ease;
+  pointer-events: none;
 }
+
 .corner-brackets::before {
   top: -1px;
   left: -1px;
   border-top: 2px solid;
   border-left: 2px solid;
 }
+
 .corner-brackets::after {
   bottom: -1px;
   right: -1px;
   border-bottom: 2px solid;
   border-right: 2px solid;
 }
+
 .corner-brackets:hover::before,
 .corner-brackets:hover::after {
   width: 20px;
@@ -65,67 +93,121 @@ body {
   @apply font-mono text-xs uppercase tracking-[0.2em] text-crimson/70;
 }
 
-/* Scan-line sweep used on hover for project sheets */
+/* Scan-line */
 @keyframes scanline {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100%); }
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(100%);
+  }
 }
+
 .scanline::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, transparent, rgba(255, 143, 163, 0.1), transparent);
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(255, 143, 163, 0.1),
+    transparent
+  );
   transform: translateY(-100%);
   pointer-events: none;
 }
+
 .group:hover .scanline::after {
   animation: scanline 1.4s ease-in-out infinite;
 }
 
+/* Marquee */
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marquee-scroll 28s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Splash/loading screen */
+@keyframes boot-bar {
+  0% {
+    width: 0%;
+  }
+
+  100% {
+    width: 100%;
+  }
+}
+
+.boot-bar-fill {
+  animation: boot-bar 1.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Horizontal featured scrollbar */
+.scrollbar-thin::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(255, 51, 71, 0.35);
+  border-radius: 999px;
+}
+
+/* Firefox */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-}
 
-/* Auto-scrolling tech logo strip */
-@keyframes marquee-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-.marquee-track {
-  animation: marquee-scroll 28s linear infinite;
-}
-.marquee-track:hover {
-  animation-play-state: paused;
-}
-
-/* Splash/loading screen boot bar */
-@keyframes boot-bar {
-  0% { width: 0%; }
-  100% { width: 100%; }
-}
-.boot-bar-fill {
-  animation: boot-bar 1.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@media (prefers-reduced-motion: reduce) {
   .marquee-track {
     animation: none;
   }
 }
 
-/* Slim themed scrollbar for the horizontal Featured photo strip */
-.scrollbar-thin::-webkit-scrollbar {
-  height: 6px;
-}
-.scrollbar-thin::-webkit-scrollbar-track {
-  background: transparent;
-}
-.scrollbar-thin::-webkit-scrollbar-thumb {
-  background: rgba(255, 51, 71, 0.35);
-  border-radius: 999px;
+/* =========================================================
+   MOBILE RESPONSIVE FIXES
+   ========================================================= */
+
+@media (max-width: 639px) {
+  /* Prevent long words/text from creating overflow */
+  h1,
+  h2,
+  h3,
+  p,
+  span,
+  a {
+    overflow-wrap: anywhere;
+  }
+
+  /* Slightly smaller blueprint grid on phones */
+  .blueprint-grid {
+    background-size: 24px 24px;
+  }
 }
